@@ -12,7 +12,7 @@ namespace WorkIT_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "ADMIN")]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly UserService _userService;
@@ -25,11 +25,37 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
-        //[Authorize(Roles = "ADMIN")]
-        [AllowAnonymous]
+        [AllowAnonymous] //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _userService.GetUsers());
+        }
+
+        [HttpGet("ById")]
+        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
+        public async Task<IActionResult> GetById(long userId)
+        {
+            var user = await _userService.GetById(userId);
+            var dto = new UserFullDto
+            {
+                UserId = user.UserId, UserName = user.UserName,
+                Role = new RoleDto
+                {
+                    RoleId = user.Role.RoleId,
+                    Name = user.Role.Name
+                },
+                Offers = user.Offers.Select(o => new OfferSimpleDto
+                {
+                    OfferId = o.OfferId,
+                    OfferName = o.OfferName
+                }).ToList(),
+                Responses = user.Responses.Select(r => new ResponseSimpleDto
+                {
+                    ResponseId = r.ResponseId,
+                    Offer = new OfferSimpleDto {OfferId = r.Offer!.OfferId, OfferName = r.Offer.OfferName}
+                }).ToList()
+            };
+            return Ok(dto);
         }
 
         [HttpPost("Login")]
@@ -51,7 +77,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpPost("Create")]
-        [AllowAnonymous]
+        [AllowAnonymous] //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> CreateUser(UserLoginDto user)
         {
             return Ok(await _userService.Create(user.UserName!, user.Password!, user.Role!));

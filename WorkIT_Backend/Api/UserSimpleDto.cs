@@ -2,7 +2,7 @@
 
 namespace WorkIT_Backend.Api;
 
-public class UserDto
+public class UserSimpleDto
 {
     public long UserId { get; set; }
     public string? UserName { get; set; }

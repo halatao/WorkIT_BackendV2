@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.Build.Framework;
 using WorkIT_Backend.Api;
 using WorkIT_Backend.Model;
@@ -9,6 +11,7 @@ namespace WorkIT_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OffersController : ControllerBase
     {
         private readonly SecurityService _securityService;
@@ -20,25 +23,36 @@ namespace WorkIT_Backend.Controllers
             _offerService = offerService;
         }
 
+        [HttpGet("ById")]
+        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
+        public async Task<IActionResult> GetById(long offerId)
+        {
+            return Ok(OfferToDto(await _offerService.GetById(offerId)).First());
+        }
+
         [HttpGet("ByCategory")]
+        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
         public async Task<IActionResult> GetByCategory(long categoryId)
         {
             return Ok(OfferToDto(await _offerService.GetByCategory(categoryId)));
         }
 
         [HttpGet("ByUser")]
+        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
         public async Task<IActionResult> GetByUser(long userId)
         {
             return Ok(OfferToDto(await _offerService.GetByUser(userId)));
         }
 
         [HttpGet("MinSalary")]
+        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
         public async Task<IActionResult> GetByMinSalary(double salaryMin)
         {
             return Ok(OfferToDto(await _offerService.GetByMinSalary(salaryMin)));
         }
 
         [HttpPost("Create")]
+        [AllowAnonymous] //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> CreateOffer(OfferPostDto offer)
         {
             return Ok(
@@ -63,7 +77,7 @@ namespace WorkIT_Backend.Controllers
                 OfferDescription = o.OfferDescription,
                 SalaryMin = o.SalaryMin,
                 SalaryMax = o.SalaryMax,
-                User = new UserDto
+                User = new UserSimpleDto
                 {
                     UserId = o.User!.UserId,
                     Role = new RoleDto
@@ -88,7 +102,7 @@ namespace WorkIT_Backend.Controllers
                     ResponseId = r.ResponseId,
                     ResponseText = r.ResponseText,
                     CurriculumVitae = r.CurriculumVitae,
-                    User = new UserDto
+                    User = new UserSimpleDto
                     {
                         UserId = r.User!.UserId, UserName = r.User.UserName,
                         Role = new RoleDto {RoleId = r.User.Role.RoleId, Name = r.User.Role.Name}

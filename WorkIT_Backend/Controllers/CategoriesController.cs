@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WorkIT_Backend.Api;
 using WorkIT_Backend.Services;
 
 namespace WorkIT_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly CategoryService _categoryService;
@@ -16,12 +19,18 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
+        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
         public async Task<IActionResult> GetCategories()
         {
-            return Ok(await _categoryService.GetCategory());
+            return Ok((await _categoryService.GetCategory()).Select(c => new CategoryDto
+            {
+                CategoryId = c.CategoryId,
+                CategoryName = c.CategoryName
+            }));
         }
 
         [HttpPost("Create")]
+        [AllowAnonymous] //[Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> CreateCategory(string name)
         {
             return Ok(await _categoryService.Create(name));

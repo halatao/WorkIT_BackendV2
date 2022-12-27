@@ -63,4 +63,9 @@ public class OfferService : ModelServiceBase
                 .ToListAsync();
         return new List<Offer>();
     }
+
+    public async Task<List<Offer>> GetById(long offerId)
+    {
+        return (await GetIncluded()).Where(q => q.OfferId == offerId).ToList();
+    }
 }

@@ -7,5 +7,5 @@ public class ResponseDto
     public long ResponseId { get; set; }
     public string? ResponseText { get; set; }
     public string? CurriculumVitae { get; set; }
-    public UserDto? User { get; set; }
+    public UserSimpleDto? User { get; set; }
 }

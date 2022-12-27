@@ -41,14 +41,13 @@ public class UserService : ModelServiceBase
 
         username = username.ToLower();
 
-        if (_context.Users.Any(q => q.UserName == username))
+        if (_context.Users!.Any(q => q.UserName == username))
             throw CreateException($"User {username} already exists.", null);
-
-        var hash = _securityService.HashPassword(password);
         var userRole = await _roleService.GetRoleByName(role);
+        var hash = _securityService.HashPassword(password);
         var ret = new User {UserName = username, PasswordHash = hash, Role = userRole};
 
-        _context.Users.Add(ret);
+        _context.Users!.Add(ret);
         await _context.SaveChangesAsync();
 
         return ret;
@@ -56,6 +55,20 @@ public class UserService : ModelServiceBase
 
     public async Task<List<User>> GetUsers()
     {
-        return await _context.Users.Include(q => q.Role).ToListAsync();
+        return await GetIncluded();
+    }
+
+    public async Task<User> GetById(long userId)
+    {
+        return (await GetIncluded()).Find(q => q.UserId == userId) ??
+               throw CreateException($"User with id {userId} does not exist", null);
+    }
+
+    private async Task<List<User>> GetIncluded()
+    {
+        if (_context.Users != null)
+            return await _context.Users.Include(q => q.Role).Include(q => q.Offers).Include(q => q.Responses)
+                .ToListAsync();
+        return new List<User>();
     }
 }

@@ -14,7 +14,7 @@ public class OfferDto
     public string? OfferDescription { get; set; }
     public double SalaryMin { get; set; }
     public double SalaryMax { get; set; }
-    public UserDto? User { get; set; }
+    public UserSimpleDto? User { get; set; }
     public LocationDto? Location { get; set; }
     public CategoryDto? Category { get; set; }
     public ICollection<ResponseDto> Responses { get; set; }
