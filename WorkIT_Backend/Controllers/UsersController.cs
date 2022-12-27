@@ -25,14 +25,14 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
-        [AllowAnonymous] //[Authorize(Roles = "ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _userService.GetUsers());
         }
 
         [HttpGet("ById")]
-        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
         public async Task<IActionResult> GetById(long userId)
         {
             var user = await _userService.GetById(userId);
@@ -77,7 +77,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpPost("Create")]
-        [AllowAnonymous] //[Authorize(Roles = "ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin)]
         public async Task<IActionResult> CreateUser(UserLoginDto user)
         {
             return Ok(await _userService.Create(user.UserName!, user.Password!, user.Role!));

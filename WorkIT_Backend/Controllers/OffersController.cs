@@ -22,35 +22,35 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("ById")]
-        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
         public async Task<IActionResult> GetById(long offerId)
         {
             return Ok(OfferToDto(await _offerService.GetById(offerId)).First());
         }
 
         [HttpGet("ByCategory")]
-        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByCategory(long categoryId)
         {
             return Ok(OfferToDto(await _offerService.GetByCategory(categoryId)));
         }
 
         [HttpGet("ByUser")]
-        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByUser(long userId)
         {
             return Ok(OfferToDto(await _offerService.GetByUser(userId)));
         }
 
         [HttpGet("MinSalary")]
-        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByMinSalary(double salaryMin)
         {
             return Ok(OfferToDto(await _offerService.GetByMinSalary(salaryMin)));
         }
 
         [HttpPost("Create")]
-        [AllowAnonymous] //[Authorize(Roles = "ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin)]
         public async Task<IActionResult> CreateOffer(OfferPostDto offer)
         {
             return Ok(

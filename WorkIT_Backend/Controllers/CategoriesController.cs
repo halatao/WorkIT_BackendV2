@@ -19,7 +19,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
-        [AllowAnonymous] //[Authorize(Roles = "RECRUITER,USER,ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
         public async Task<IActionResult> GetCategories()
         {
             return Ok((await _categoryService.GetCategory()).Select(c => new CategoryDto
@@ -30,7 +30,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpPost("Create")]
-        [AllowAnonymous] //[Authorize(Roles = "ADMIN")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin)]
         public async Task<IActionResult> CreateCategory(string name)
         {
             return Ok(await _categoryService.Create(name));
