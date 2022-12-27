@@ -13,7 +13,7 @@ namespace WorkIT_Backend.Controllers
     {
         private readonly LocationService _locationService;
 
-        public LocationsController(LocationService locationService)
+        public LocationsController([FromServices] LocationService locationService)
         {
             _locationService = locationService;
         }

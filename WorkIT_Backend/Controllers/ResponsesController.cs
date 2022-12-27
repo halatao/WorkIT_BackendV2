@@ -14,7 +14,7 @@ namespace WorkIT_Backend.Controllers
     {
         private readonly ResponseService _responseService;
 
-        public ResponsesController(ResponseService responseService)
+        public ResponsesController([FromServices] ResponseService responseService)
         {
             _responseService = responseService;
         }

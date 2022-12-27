@@ -13,7 +13,7 @@ namespace WorkIT_Backend.Controllers
     {
         private readonly CategoryService _categoryService;
 
-        public CategoriesController(CategoryService categoryService)
+        public CategoriesController([FromServices] CategoryService categoryService)
         {
             _categoryService = categoryService;
         }

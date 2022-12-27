@@ -14,12 +14,10 @@ namespace WorkIT_Backend.Controllers
     [Authorize]
     public class OffersController : ControllerBase
     {
-        private readonly SecurityService _securityService;
         private readonly OfferService _offerService;
 
-        public OffersController(SecurityService securityService, OfferService offerService)
+        public OffersController([FromServices] OfferService offerService)
         {
-            _securityService = securityService;
             _offerService = offerService;
         }
 

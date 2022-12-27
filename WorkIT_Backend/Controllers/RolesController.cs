@@ -11,12 +11,10 @@ namespace WorkIT_Backend.Controllers
     public class RolesController : ControllerBase
     {
         private readonly RoleService _roleService;
-        private readonly SecurityService _securityService;
 
-        public RolesController(RoleService roleService, SecurityService securityService)
+        public RolesController([FromServices] RoleService roleService)
         {
             _roleService = roleService;
-            _securityService = securityService;
         }
 
         [HttpGet("All")]
