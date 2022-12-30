@@ -21,6 +21,39 @@ namespace WorkIT_Backend.Controllers
             _offerService = offerService;
         }
 
+        [HttpGet("All")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        public async Task<IActionResult> GetOffers()
+        {
+            return Ok(OfferToDto(await _offerService.GetOffers()));
+        }
+
+        [HttpPost("WithFilter")]
+        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        public async Task<IActionResult> GetWithFilter(Filter filter)
+        {
+            var ret = OfferToDto((await _offerService.GetOffers()));
+            if (filter.LocationIds != null && filter.LocationIds.Count != 0)
+            {
+                ret = ret.Where(q => q.Location != null && filter.LocationIds.Contains(q.Location.LocationId)).ToList();
+            }
+
+            if (filter.CategoryIds != null && filter.CategoryIds.Count != 0)
+            {
+                ret = ret.Where(q => q.Category != null && filter.CategoryIds.Contains(q.Category.CategoryId)).ToList();
+            }
+
+            if (filter.SalaryMin > 0)
+            {
+                ret = ret.Where(q => q.SalaryMin >= filter.SalaryMin).ToList();
+            }
+
+            return Ok(ret);
+            //return Ok(OfferToDto((await _offerService.GetOffers())
+            //    .Where(q => categoryIds.Contains(q.CategoryId))
+            //    .ToList()));
+        }
+
         [HttpGet("ById")]
         [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
         public async Task<IActionResult> GetById(long offerId)
@@ -28,25 +61,11 @@ namespace WorkIT_Backend.Controllers
             return Ok(OfferToDto(await _offerService.GetById(offerId)).First());
         }
 
-        [HttpGet("ByCategory")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
-        public async Task<IActionResult> GetByCategory(long categoryId)
-        {
-            return Ok(OfferToDto(await _offerService.GetByCategory(categoryId)));
-        }
-
         [HttpGet("ByUser")]
         [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByUser(long userId)
         {
             return Ok(OfferToDto(await _offerService.GetByUser(userId)));
-        }
-
-        [HttpGet("MinSalary")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
-        public async Task<IActionResult> GetByMinSalary(double salaryMin)
-        {
-            return Ok(OfferToDto(await _offerService.GetByMinSalary(salaryMin)));
         }
 
         [HttpPost("Create")]

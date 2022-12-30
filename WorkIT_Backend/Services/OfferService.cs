@@ -52,7 +52,17 @@ public class OfferService : ModelServiceBase
         return (await GetIncluded()).Where(q => q.SalaryMin >= salaryMin).ToList();
     }
 
-    public async Task<List<Offer>> GetIncluded()
+    public async Task<List<Offer>> GetById(long offerId)
+    {
+        return (await GetIncluded()).Where(q => q.OfferId == offerId).ToList();
+    }
+
+    public async Task<List<Offer>> GetOffers()
+    {
+        return await GetIncluded();
+    }
+
+    private async Task<List<Offer>> GetIncluded()
     {
         if (_context.Offers != null)
             return await _context.Offers
@@ -62,10 +72,5 @@ public class OfferService : ModelServiceBase
                 .Include(l => l.Location)
                 .ToListAsync();
         return new List<Offer>();
-    }
-
-    public async Task<List<Offer>> GetById(long offerId)
-    {
-        return (await GetIncluded()).Where(q => q.OfferId == offerId).ToList();
     }
 }
