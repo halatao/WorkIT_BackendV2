@@ -34,7 +34,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpPost("Create")]
-        [Authorize(Roles = CustomRoles.Admin)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User)]
         public async Task<IActionResult> Create(ResponsePostDto response)
         {
             return Ok(

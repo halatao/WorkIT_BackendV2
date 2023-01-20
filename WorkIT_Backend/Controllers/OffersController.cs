@@ -52,7 +52,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("ById")]
-        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(long offerId)
         {
             return Ok(OfferToDto(await _offerService.GetById(offerId)).First());
