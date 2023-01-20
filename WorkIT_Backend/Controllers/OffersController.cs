@@ -22,14 +22,14 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
-        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin)]
         public async Task<IActionResult> GetOffers()
         {
             return Ok(OfferToDto(await _offerService.GetOffers()));
         }
 
         [HttpPost("WithFilter")]
-        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetWithFilter(Filter filter)
         {
             var ret = OfferToDto((await _offerService.GetOffers()));

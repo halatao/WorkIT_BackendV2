@@ -27,7 +27,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("ByOffer")]
-        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByOffer(long offerId)
         {
             return Ok(await _responseService.GetByOffer(offerId));

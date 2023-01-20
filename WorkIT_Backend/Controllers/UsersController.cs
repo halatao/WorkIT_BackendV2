@@ -26,7 +26,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
-        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin)]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _userService.GetUsers());

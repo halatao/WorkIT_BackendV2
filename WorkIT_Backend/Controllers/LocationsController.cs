@@ -19,7 +19,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
-        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetLocations()
         {
             return Ok((await _locationService.GetLocations()).Select(l => new LocationDto
