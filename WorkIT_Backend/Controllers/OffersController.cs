@@ -22,14 +22,14 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetOffers()
         {
             return Ok(OfferToDto(await _offerService.GetOffers()));
         }
 
         [HttpPost("WithFilter")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetWithFilter(Filter filter)
         {
             var ret = OfferToDto((await _offerService.GetOffers()));
@@ -49,27 +49,24 @@ namespace WorkIT_Backend.Controllers
             }
 
             return Ok(ret);
-            //return Ok(OfferToDto((await _offerService.GetOffers())
-            //    .Where(q => categoryIds.Contains(q.CategoryId))
-            //    .ToList()));
         }
 
         [HttpGet("ById")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetById(long offerId)
         {
             return Ok(OfferToDto(await _offerService.GetById(offerId)).First());
         }
 
         [HttpGet("ByUser")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByUser(long userId)
         {
             return Ok(OfferToDto(await _offerService.GetByUser(userId)));
         }
 
         [HttpPost("Create")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin)]
+        [Authorize(Roles = CustomRoles.Admin)]
         public async Task<IActionResult> CreateOffer(OfferPostDto offer)
         {
             return Ok(

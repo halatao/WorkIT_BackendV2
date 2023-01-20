@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using WorkIT_Backend.Data;
 using WorkIT_Backend.Model;
@@ -14,7 +15,7 @@ public class SecurityService
 {
     private const int TokenExpirationInSeconds = 600;
     private readonly IConfiguration _configuration;
-    public byte[] Key { get; } = RandomNumberGenerator.GetBytes(128);
+    public byte[] Key { get; } = Encoding.UTF8.GetBytes("ThisIsAVeryLongPrivateKey");
 
     public SecurityService([FromServices] IConfiguration configuration)
     {
@@ -33,7 +34,7 @@ public class SecurityService
 
     public string BuildJwtToken(User user)
     {
-        //var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
+        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
         var roles = new List<Role> {user.Role};
         var roleClaims = roles.ToDictionary(
             q => ClaimTypes.Role,
@@ -51,7 +52,8 @@ public class SecurityService
             }),
             Expires = DateTime.UtcNow.AddSeconds(TokenExpirationInSeconds),
             SigningCredentials =
-                new SigningCredentials(new SymmetricSecurityKey(Key), SecurityAlgorithms.HmacSha512Signature),
+                new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha512Signature),
             Claims = roleClaims
         };
 

@@ -64,6 +64,12 @@ public class UserService : ModelServiceBase
                throw CreateException($"User with id {userId} does not exist", null);
     }
 
+    public async Task<User> GetByUsername(string username)
+    {
+        return (await GetIncluded()).Find(q => q.UserName == username) ??
+               throw CreateException($"User with id {username} does not exist", null);
+    }
+
     private async Task<List<User>> GetIncluded()
     {
         if (_context.Users != null)

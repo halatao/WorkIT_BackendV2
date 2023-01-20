@@ -20,21 +20,21 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("ByUser")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByUser(long userId)
         {
             return Ok(await _responseService.GetByUser(userId));
         }
 
         [HttpGet("ByOffer")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByOffer(long offerId)
         {
             return Ok(await _responseService.GetByOffer(offerId));
         }
 
         [HttpPost("Create")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin)]
+        [Authorize(Roles = CustomRoles.Admin)]
         public async Task<IActionResult> Create(ResponsePostDto response)
         {
             return Ok(

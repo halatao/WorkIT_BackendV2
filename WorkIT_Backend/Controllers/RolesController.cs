@@ -18,14 +18,14 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetRoles()
         {
             return Ok(await _roleService.GetRoles());
         }
 
         [HttpPost("Create")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin)]
+        [Authorize(Roles = CustomRoles.Admin)]
         public async Task<IActionResult> CreateRole(string role)
         {
             return Ok(await _roleService.Create(role));

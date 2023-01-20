@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Diagnostics.Tracing;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,37 +26,28 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpGet("All")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _userService.GetUsers());
         }
 
         [HttpGet("ById")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin+","+CustomRoles.User+","+CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetById(long userId)
         {
             var user = await _userService.GetById(userId);
-            var dto = new UserFullDto
-            {
-                UserId = user.UserId, UserName = user.UserName,
-                Role = new RoleDto
-                {
-                    RoleId = user.Role.RoleId,
-                    Name = user.Role.Name
-                },
-                Offers = user.Offers.Select(o => new OfferSimpleDto
-                {
-                    OfferId = o.OfferId,
-                    OfferName = o.OfferName
-                }).ToList(),
-                Responses = user.Responses.Select(r => new ResponseSimpleDto
-                {
-                    ResponseId = r.ResponseId,
-                    Offer = new OfferSimpleDto {OfferId = r.Offer!.OfferId, OfferName = r.Offer.OfferName}
-                }).ToList()
-            };
-            return Ok(dto);
+
+            return Ok(UserToDto(user));
+        }
+
+        [HttpGet("ByUsername")]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
+        public async Task<IActionResult> GetByUsername(string username)
+        {
+            var user = await _userService.GetByUsername(username);
+
+            return Ok(UserToDto(user));
         }
 
         [HttpPost("Login")]
@@ -72,15 +64,40 @@ namespace WorkIT_Backend.Controllers
                 return BadRequest(ex.Message);
             }
 
-            var token = _securityService.BuildJwtToken(user);
-            return Ok(token);
+            return Ok(_securityService.BuildJwtToken(user));
         }
 
         [HttpPost("Create")]
-        [AllowAnonymous] //[Authorize(Roles = CustomRoles.Admin)]
+        [Authorize(Roles = CustomRoles.Admin)]
         public async Task<IActionResult> CreateUser(UserLoginDto user)
         {
-            return Ok(await _userService.Create(user.UserName!, user.Password!, user.Role!));
+            return Ok(_securityService.BuildJwtToken(await _userService.Create(user.UserName!, user.Password!,
+                user.Role!)));
+        }
+
+        [NonAction]
+        public UserFullDto UserToDto(User user)
+        {
+            return new UserFullDto
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                Role = new RoleDto
+                {
+                    RoleId = user.Role.RoleId,
+                    Name = user.Role.Name
+                },
+                Offers = user.Offers.Select(o => new OfferSimpleDto
+                {
+                    OfferId = o.OfferId,
+                    OfferName = o.OfferName
+                }).ToList(),
+                Responses = user.Responses.Select(r => new ResponseSimpleDto
+                {
+                    ResponseId = r.ResponseId,
+                    Offer = new OfferSimpleDto {OfferId = r.Offer!.OfferId, OfferName = r.Offer.OfferName}
+                }).ToList()
+            };
         }
     }
 }

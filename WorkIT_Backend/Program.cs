@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,9 +33,7 @@ builder.Services.AddAuthentication(opt =>
 }).AddJwtBearer(opt =>
 {
     // key from config
-    //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
-    // or random key each app-start
-    var key = new SymmetricSecurityKey(securityService.Key);
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
     opt.TokenValidationParameters = new TokenValidationParameters()
     {
         IssuerSigningKey = key,
