@@ -23,14 +23,14 @@ namespace WorkIT_Backend.Controllers
         [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.User + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByUser(long userId)
         {
-            return Ok(await _responseService.GetByUser(userId));
+            return Ok(ResponseToDto(await _responseService.GetByUser(userId)));
         }
 
         [HttpGet("ByOffer")]
-        [Authorize(Roles = CustomRoles.Admin + CustomRoles.Recruiter)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> GetByOffer(long offerId)
         {
-            return Ok(await _responseService.GetByOffer(offerId));
+            return Ok(ResponseToDto(await _responseService.GetByOffer(offerId)));
         }
 
         [HttpPost("Create")]
@@ -44,6 +44,27 @@ namespace WorkIT_Backend.Controllers
                     response.ResponseText!,
                     response.CurriculumVitae!
                 ));
+        }
+
+        [NonAction]
+        public List<ResponseDto> ResponseToDto(List<Response> responses)
+        {
+            return responses.Select(r => new ResponseDto
+            {
+                ResponseId = r.ResponseId,
+                CurriculumVitae = r.CurriculumVitae,
+                ResponseText = r.ResponseText,
+                User = new UserSimpleDto
+                {
+                    UserId = r.UserId,
+                    UserName = r.User?.UserName,
+                    Role = new RoleDto
+                    {
+                        RoleId = r.User!.RoleId,
+                        Name = r.User.Role.Name
+                    }
+                }
+            }).ToList();
         }
     }
 }

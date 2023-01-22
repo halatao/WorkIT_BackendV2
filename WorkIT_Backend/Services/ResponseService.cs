@@ -40,7 +40,7 @@ public class ResponseService : ModelServiceBase
     private async Task<List<Response>> GetIncluded()
     {
         if (_context.Responses != null)
-            return await _context.Responses.ToListAsync();
+            return await _context.Responses.Include(q => q.User).ThenInclude(q => q!.Role).ToListAsync();
         return new List<Response>();
     }
 }
