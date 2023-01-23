@@ -66,7 +66,7 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpPost("Create")]
-        [Authorize(Roles = CustomRoles.Admin)]
+        [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.Recruiter)]
         public async Task<IActionResult> CreateOffer(OfferPostDto offer)
         {
             return Ok(

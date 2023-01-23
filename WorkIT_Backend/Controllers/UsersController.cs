@@ -68,11 +68,18 @@ namespace WorkIT_Backend.Controllers
         }
 
         [HttpPost("Create")]
-        [Authorize(Roles = CustomRoles.Admin)]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateUser(UserLoginDto user)
         {
-            return Ok(_securityService.BuildJwtToken(await _userService.Create(user.UserName!, user.Password!,
-                user.Role!)));
+            if (user.Role == CustomRoles.Admin)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return Ok(_securityService.BuildJwtToken(await _userService.Create(user.UserName!, user.Password!,
+                    user.Role!)));
+            }
         }
 
         [NonAction]
