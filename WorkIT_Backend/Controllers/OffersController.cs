@@ -32,6 +32,7 @@ namespace WorkIT_Backend.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetWithFilter(Filter filter)
         {
+            //filter o úroveň níž, není pak nutná alokace celé DB - filtrovat na DB contextu
             var ret = OfferToDto((await _offerService.GetOffers()));
             if (filter.LocationIds != null && filter.LocationIds.Count != 0)
             {
