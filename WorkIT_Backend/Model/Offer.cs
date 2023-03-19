@@ -7,6 +7,7 @@ public sealed class Offer
     public string? OfferDescription { get; set; }
     public double SalaryMin { get; set; }
     public double SalaryMax { get; set; }
+    public DateTime Created { get; set; }
 
     public long UserId { get; set; }
     public long LocationId { get; set; }

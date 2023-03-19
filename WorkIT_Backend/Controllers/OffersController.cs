@@ -27,19 +27,17 @@ public class OffersController : ControllerBase
 
     [HttpPost("WithFilter")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetWithFilter(Filter filter)
+    public async Task<IActionResult> GetWithFilter(Filter filter, int pageNumber, int pageSize, string orderBy)
     {
-        //filter o úroveň níž, není pak nutná alokace celé DB - filtrovat na DB contextu
-        var ret = OfferToDto(await _offerService.GetOffers());
-        if (filter.LocationIds != null && filter.LocationIds.Count != 0)
-            ret = ret.Where(q => q.Location != null && filter.LocationIds.Contains(q.Location.LocationId)).ToList();
+        var offers = await _offerService.GetFiltered(filter);
+        var ordered = _offerService.OrderOffers(offers, orderBy);
 
-        if (filter.CategoryIds != null && filter.CategoryIds.Count != 0)
-            ret = ret.Where(q => q.Category != null && filter.CategoryIds.Contains(q.Category.CategoryId)).ToList();
+        var totalItems = ordered.Count();
+        var totalPages = (int) Math.Ceiling((double) totalItems / pageSize);
 
-        if (filter.SalaryMin > 0) ret = ret.Where(q => q.SalaryMin >= filter.SalaryMin).ToList();
+        var pagedOffers = OfferToDto(ordered.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList());
 
-        return Ok(ret);
+        return Ok(new {totalPages, pagedOffers});
     }
 
     [HttpGet("ById")]
@@ -110,7 +108,7 @@ public class OffersController : ControllerBase
                 User = new UserSimpleDto
                 {
                     UserId = r.User!.UserId, UserName = r.User.UserName,
-                    Role = new RoleDto { RoleId = r.User.Role.RoleId, Name = r.User.Role.Name }
+                    Role = new RoleDto {RoleId = r.User.Role.RoleId, Name = r.User.Role.Name}
                 }
             }).ToList()
         }).ToList();

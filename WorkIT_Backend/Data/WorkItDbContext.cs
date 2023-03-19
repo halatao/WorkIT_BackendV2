@@ -63,6 +63,8 @@ public class WorkItDbContext : DbContext
 
             entity.Property(q => q.SalaryMax);
 
+            entity.Property(q => q.Created).IsRequired();
+
             entity.HasOne(o => o.Location)
                 .WithMany(l => l.Offers)
                 .HasForeignKey(o => o.LocationId)

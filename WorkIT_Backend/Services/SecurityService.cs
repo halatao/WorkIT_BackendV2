@@ -15,7 +15,6 @@ public class SecurityService
 {
     private const int TokenExpirationInSeconds = 600;
     private readonly IConfiguration _configuration;
-    public byte[] Key { get; } = Encoding.UTF8.GetBytes("ThisIsAVeryLongPrivateKey");
 
     public SecurityService([FromServices] IConfiguration configuration)
     {
