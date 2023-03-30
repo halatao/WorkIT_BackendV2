@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.VisualBasic.Syntax;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WorkIT_Backend.Data;
 using WorkIT_Backend.Model;
 
@@ -16,12 +15,13 @@ public class ResponseService : ModelServiceBase
         _context = context;
     }
 
-    public async Task<Response> Create(long offerId, long userId, string responseText, string cv)
+    public async Task<Response> Create(long offerId, long userId, string? responseText, string? cv)
     {
         EnsureNotNull(responseText, nameof(responseText));
         EnsureNotNull(cv, nameof(responseText));
 
-        var ret = new Response {OfferId = offerId, UserId = userId, ResponseText = responseText, CurriculumVitae = cv};
+        var ret = new Response
+            { OfferId = offerId, UserId = userId, ResponseText = responseText, CurriculumVitae = cv };
         _context.Add(ret);
         await _context.SaveChangesAsync();
         return ret;

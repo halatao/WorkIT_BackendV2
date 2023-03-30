@@ -16,15 +16,15 @@ public class RoleService : ModelServiceBase
         _securityService = securityService;
     }
 
-    public async Task<Role> Create(string name)
+    public async Task<Role> Create(string? name)
     {
         EnsureNotNull(name, nameof(name));
 
         name = name.ToLower();
         if (_context.Roles.Any(q => q.Name == name))
-            throw CreateException($"Role {name} already exists.", null);
+            throw CreateException($"Role {name} already exists.");
 
-        var ret = new Role {Name = name};
+        var ret = new Role { Name = name };
         _context.Add(ret);
         await _context.SaveChangesAsync();
         return ret;
@@ -36,7 +36,7 @@ public class RoleService : ModelServiceBase
         return roles;
     }
 
-    public async Task<Role> GetRoleByName(string name)
+    public async Task<Role> GetRoleByName(string? name)
     {
         var role = await _context.Roles.FirstAsync(q => q.Name == name) ??
                    throw CreateException($"Role {name} does not exist.");

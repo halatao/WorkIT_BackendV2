@@ -16,7 +16,7 @@ public class OfferService : ModelServiceBase
         _context = context;
     }
 
-    public async Task<Offer> Create(string offerName, string offerDesc, long userId, long categoryId, long locationId,
+    public async Task<Offer> Create(string? offerName, string? offerDesc, long userId, long categoryId, long locationId,
         double salaryMin,
         double salaryMax)
     {
@@ -94,7 +94,7 @@ public class OfferService : ModelServiceBase
 
     private IQueryable<Offer> GetIncluded()
     {
-        return ((_context.Offers ?? throw new InvalidOperationException()))
+        return (_context.Offers ?? throw new InvalidOperationException())
             .Include(u => u.User)
             .ThenInclude(r => r!.Role)
             .Include(c => c.Category)

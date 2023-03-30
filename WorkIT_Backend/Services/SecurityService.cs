@@ -1,11 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using WorkIT_Backend.Data;
 using WorkIT_Backend.Model;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
@@ -21,12 +18,12 @@ public class SecurityService
         _configuration = configuration;
     }
 
-    public string HashPassword(string password)
+    public string HashPassword(string? password)
     {
         return BCrypt.Net.BCrypt.EnhancedHashPassword(password);
     }
 
-    public bool VerifyPassword(string password, string passwordHash)
+    public bool VerifyPassword(string? password, string passwordHash)
     {
         return BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash);
     }
@@ -34,10 +31,10 @@ public class SecurityService
     public string BuildJwtToken(User user)
     {
         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-        var roles = new List<Role> {user.Role};
+        var roles = new List<Role> { user.Role };
         var roleClaims = roles.ToDictionary(
             q => ClaimTypes.Role,
-            q => (object) q.Name.ToUpper());
+            q => (object)q.Name.ToUpper());
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging;
 using WorkIT_Backend.Data;
 using WorkIT_Backend.Model;
 
@@ -9,8 +8,8 @@ namespace WorkIT_Backend.Services;
 public class UserService : ModelServiceBase
 {
     private readonly WorkItDbContext _context;
-    private readonly SecurityService _securityService;
     private readonly RoleService _roleService;
+    private readonly SecurityService _securityService;
 
     public UserService([FromServices] WorkItDbContext context, [FromServices] SecurityService securityService,
         [FromServices] RoleService roleService)
@@ -20,7 +19,7 @@ public class UserService : ModelServiceBase
         _roleService = roleService;
     }
 
-    public async Task<User> GetUserByCredentials(string username, string password)
+    public async Task<User> GetUserByCredentials(string? username, string? password)
     {
         EnsureNotNull(username, nameof(username));
         EnsureNotNull(password, nameof(password));
@@ -28,12 +27,12 @@ public class UserService : ModelServiceBase
         var user = await _context.Users.Include(q => q.Role).FirstOrDefaultAsync(q => q.UserName == username.ToLower())
                    ?? throw CreateException($"User {username} does not exist.");
         if (!_securityService.VerifyPassword(password, user.PasswordHash))
-            throw CreateException($"Credentials are not valid.");
+            throw CreateException("Credentials are not valid.");
 
         return user;
     }
 
-    public async Task<User> Create(string username, string password, string role)
+    public async Task<User> Create(string? username, string? password, string? role)
     {
         EnsureNotNull(username, nameof(username));
         EnsureNotNull(password, nameof(password));
@@ -42,10 +41,10 @@ public class UserService : ModelServiceBase
         username = username.ToLower();
 
         if (_context.Users!.Any(q => q.UserName == username))
-            throw CreateException($"User {username} already exists.", null);
+            throw CreateException($"User {username} already exists.");
         var userRole = await _roleService.GetRoleByName(role);
         var hash = _securityService.HashPassword(password);
-        var ret = new User {UserName = username, PasswordHash = hash, Role = userRole};
+        var ret = new User { UserName = username, PasswordHash = hash, Role = userRole };
 
         _context.Users!.Add(ret);
         await _context.SaveChangesAsync();
@@ -61,13 +60,13 @@ public class UserService : ModelServiceBase
     public async Task<User> GetById(long userId)
     {
         return (await GetIncluded()).Find(q => q.UserId == userId) ??
-               throw CreateException($"User with id {userId} does not exist", null);
+               throw CreateException($"User with id {userId} does not exist");
     }
 
     public async Task<User> GetByUsername(string username)
     {
         return (await GetIncluded()).Find(q => q.UserName == username) ??
-               throw CreateException($"User with id {username} does not exist", null);
+               throw CreateException($"User with id {username} does not exist");
     }
 
     private async Task<List<User>> GetIncluded()

@@ -7,13 +7,6 @@ public class WorkItDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
 
-    public DbSet<Category>? Categories { get; set; }
-    public DbSet<Location>? Locations { get; set; }
-    public DbSet<Offer>? Offers { get; set; }
-    public DbSet<Response>? Responses { get; set; }
-    public DbSet<Role>? Roles { get; set; }
-    public DbSet<User>? Users { get; set; }
-
     public WorkItDbContext()
     {
     }
@@ -24,6 +17,13 @@ public class WorkItDbContext : DbContext
         //base.Database.EnsureDeleted();
         //base.Database.EnsureCreated();
     }
+
+    public DbSet<Category>? Categories { get; set; }
+    public DbSet<Location>? Locations { get; set; }
+    public DbSet<Offer>? Offers { get; set; }
+    public DbSet<Response>? Responses { get; set; }
+    public DbSet<Role>? Roles { get; set; }
+    public DbSet<User>? Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
