@@ -70,6 +70,21 @@ public class OffersController : ControllerBase
             ));
     }
 
+    [HttpPut("Update")]
+    [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.Recruiter)]
+    public async Task<IActionResult> UpdateOffer(OfferUpdateDto offer)
+    {
+        return Ok(await _offerService.UpdateOffer(offer));
+    }
+
+    [HttpDelete("Delete")]
+    [Authorize(Roles = CustomRoles.Admin + "," + CustomRoles.Recruiter)]
+    public async Task<IActionResult> DeleteOffer(long offerId)
+    {
+        await _offerService.DeleteOffer(offerId);
+        return Ok();
+    }
+
     [NonAction]
     public List<OfferDto> OfferToDto(List<Offer> offers)
     {

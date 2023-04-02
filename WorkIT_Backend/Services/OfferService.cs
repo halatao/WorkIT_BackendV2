@@ -112,4 +112,37 @@ public class OfferService : ModelServiceBase
             _ => offers
         };
     }
+
+    public async Task<Offer> UpdateOffer(OfferUpdateDto offerUpdateDto)
+    {
+        var offer = await _context.Offers!.FindAsync(offerUpdateDto.OfferId);
+        if (offer == null)
+            throw new InvalidOperationException("Offer not found");
+        offer.OfferName = offerUpdateDto.OfferName;
+        offer.OfferDescription = offerUpdateDto.OfferDescription;
+        offer.UserId = offerUpdateDto.UserId;
+        offer.CategoryId = offerUpdateDto.CategoryId;
+        offer.LocationId = offerUpdateDto.LocationId;
+        offer.SalaryMin = offerUpdateDto.SalaryMin;
+        offer.SalaryMax = offerUpdateDto.SalaryMax;
+        await _context.SaveChangesAsync();
+        return offer;
+    }
+
+
+    public async Task DeleteOffer(long offerId)
+    {
+        if (_context.Offers != null)
+        {
+            var offer = await _context.Offers.FindAsync(offerId);
+            if (offer == null)
+                throw new InvalidOperationException("Offer not found");
+            var replies = await (_context.Responses ?? throw new InvalidOperationException())
+                .Where(r => r.OfferId == offerId).ToListAsync();
+            _context.Responses.RemoveRange(replies);
+            _context.Offers.Remove(offer);
+        }
+
+        await _context.SaveChangesAsync();
+    }
 }
