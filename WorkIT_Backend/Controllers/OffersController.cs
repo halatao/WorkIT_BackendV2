@@ -33,11 +33,13 @@ public class OffersController : ControllerBase
         var ordered = _offerService.OrderOffers(offers, orderBy);
 
         var totalItems = ordered.Count();
-        var totalPages = (int) Math.Ceiling((double) totalItems / pageSize);
+        // var totalPages = (int) Math.Ceiling((double) totalItems / pageSize);
 
-        var pagedOffers = OfferToDto(ordered.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList());
+        // var pagedOffers = OfferToDto(ordered.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList());
 
-        return Ok(new {totalPages, pagedOffers});
+        // return Ok(new {totalPages, pagedOffers});
+
+        return Ok(new {totalItems, ordered});
     }
 
     [HttpGet("ById")]
